@@ -157,6 +157,7 @@ function showPage(p){
   });
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('act'));
   stopTimer();
+  closeSidebar();
   if(p==='home'){document.getElementById('hp').style.display='block';document.getElementById('nb-home').classList.add('act');updTopicBars();}
   else if(p==='progress'){document.getElementById('pp').style.display='block';document.getElementById('nb-prog').classList.add('act');renderPGrid();}
   else if(p==='vocab'){document.getElementById('vp').style.display='block';document.getElementById('nb-vocab').classList.add('act');renderVocab('');}
@@ -579,15 +580,8 @@ function renderVocab(f){
 }
 function filterVocab(v){renderVocab(v);}
 
-// ── STREAK & CONFETTI ───────────────────────────────────────────────────
+// ── STREAK ──────────────────────────────────────────────────────────────
 function updStreak(ok){const today=new Date().toDateString();if(ok&&lastDate!==today){streak++;lastDate=today;}saveS();updStats();}
-function confetti(){
-  const w=document.createElement('div');w.className='cw';document.body.appendChild(w);
-  const acc=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
-  const c=[acc,'#f0c040','#3dd68c','#f05050',acc+'99','#f08030'];
-  for(let i=0;i<90;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=c[i%c.length];p.style.width=(5+Math.random()*8)+'px';p.style.height=(5+Math.random()*8)+'px';p.style.animationDuration=(1.2+Math.random()*2)+'s';p.style.animationDelay=Math.random()*0.6+'s';w.appendChild(p);}
-  setTimeout(()=>w.remove(),4000);
-}
 
 
 // ══ OVERLAY HELPERS ═══════════════════════════════════════════════════
@@ -628,6 +622,16 @@ function confetti() {
 }
 
 
+// ── MOBILE SIDEBAR ────────────────────────────────────────────────────
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+}
+
 // ── Overlay aliases (v5 shell → v4 engine) ─────────────────────────
 
 function openOverlay(which) {
@@ -644,13 +648,54 @@ function openOverlay(which) {
   }
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────
-applyTheme(currentTheme);
-applyLangTheme(currentLang);
-showPage('home');
-updTopicBars();
-applyUILang();
-updStats();
-if (!S.lang) {
-  openOverlay('lang');
+// ── INIT (called after data loads) ────────────────────────────────────
+function init(){
+  applyTheme(currentTheme);
+  applyLangTheme(currentLang);
+  showPage('home');
+  updTopicBars();
+  applyUILang();
+  updStats();
+  if (!S.lang) openOverlay('lang');
 }
+
+// ── DATA LOADER ────────────────────────────────────────────────────────
+const DATA_FILES = [
+  'data/questions.js',
+  'data/states.js',
+  'data/images.js',
+  'data/vocabulary.js',
+  'data/explanations.js',
+  'data/translations.js',
+  'data/metadata.js',
+];
+
+function loadScript(src){
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+// Apply theme immediately so there's no flash while data loads
+applyTheme(currentTheme);
+
+(async function(){
+  const overlay = document.getElementById('loading-overlay');
+  const bar     = document.getElementById('loading-bar');
+  const status  = document.getElementById('loading-status');
+  try {
+    for (let i = 0; i < DATA_FILES.length; i++) {
+      if (bar) bar.style.width = ((i / DATA_FILES.length) * 100) + '%';
+      await loadScript(DATA_FILES[i]);
+    }
+    if (bar) bar.style.width = '100%';
+    await new Promise(r => setTimeout(r, 150));
+    if (overlay) overlay.style.display = 'none';
+    init();
+  } catch(e) {
+    if (status){ status.textContent = 'Fehler beim Laden – bitte Seite neu laden.'; status.style.color = '#f05050'; }
+    if (bar){ bar.style.background = '#f05050'; }
+  }
+})();
