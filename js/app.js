@@ -13,7 +13,8 @@ function t(key){ return (UIT[currentLang]&&UIT[currentLang][key]) || (UIT['en']&
 function sk(n,sec){return (sec&&sec!=='general'?sec.replace(/[^a-zA-Z]/g,'').substring(0,5)+'_':'')+n;}
 function getS(n,sec){return S[sk(n,sec)]||'u';}
 function setS(n,sec,v){S[sk(n,sec)]=v;saveS();updStats();}
-function saveS(){S.sk=streak;S.ld=lastDate;S.lang=currentLang;S.state=currentState;S.theme=currentTheme;localStorage.setItem('et5',JSON.stringify(S));}
+function saveS(){S.sk=streak;S.ld=lastDate;S.lang=currentLang;S.state=currentState;S.theme=currentTheme;localStorage.setItem('et5',JSON.stringify(S));if(typeof Sync!=='undefined')Sync.debouncedPush();}
+function applyProgressData(newS){S=newS;streak=S.sk||0;lastDate=S.ld||null;currentLang=S.lang||currentLang;currentState=S.state||currentState;currentTheme=S.theme||currentTheme;applyTheme(currentTheme);applyLangTheme(currentLang);updStats();}
 function setSRS(n,sec,ok){
   const k='srs_'+sk(n,sec),rk='rep_'+sk(n,sec);
   const rep=S[rk]||0,ivs=[1,2,4,7,14,30];
@@ -263,6 +264,11 @@ function startQuiz(m,ti){
   queue=buildQueue(m,ti);
   if(!queue.length){alert('Keine Fragen verfügbar!');return;}
   idx=0;sC=0;sT=0;sW=[];mode='quiz';isMock=(m==='mock');
+  if(typeof Analytics!=='undefined'){
+    if(m==='mock') Analytics.track('mock_started');
+    else if(m==='weak') Analytics.track('weak_queue_used',{count:queue.length});
+    else Analytics.track('quiz_started',{mode:m,topic:ti||null,count:queue.length});
+  }
   showPage('');
   document.getElementById('qc').style.display='block';
   document.getElementById('lm').style.display='none';
@@ -274,7 +280,10 @@ function startQuiz(m,ti){
   else document.getElementById('qtimer').style.display='none';
   renderQNav();renderQ();
 }
-function startMock(){startQuiz('mock');}
+function startMock(){
+  if(typeof Payments!=='undefined'&&!Payments.checkMockGuard())return;
+  startQuiz('mock');
+}
 
 function renderQNav(){
   const grid=document.getElementById('qnav-grid');
@@ -555,6 +564,11 @@ function showResults(){
       return '<div class="wc"><div class="wq">'+w.question+'</div>'+(tr2?'<div class="wq-en">'+tr2.q+'</div>':'')+'<div class="wy">'+t('your_answer')+': '+ya+'</div><div class="wok">'+t('right_answer')+': '+w.options[w.correct]+(tr2&&tr2.opts?' <em style="font-size:10.5px;opacity:.7">('+tr2.opts[w.correct]+')</em>':'')+'</div></div>';
     }).join('');
   } else wlc.style.display='none';
+  if(typeof Analytics!=='undefined'){
+    const evName=isMock?'mock_completed':'quiz_completed';
+    Analytics.track(evName,{score:sC,total:sT,passed:p,pct});
+  }
+  if(isMock&&typeof Sync!=='undefined')Sync.push();
 }
 
 // ── PROGRESS ───────────────────────────────────────────────────────────
@@ -673,6 +687,12 @@ function init(){
   applyUILang();
   updStats();
   if (!S.lang) openOverlay('lang');
+  if(typeof Auth!=='undefined'){
+    Auth.init().then(()=>{
+      if(typeof Sync!=='undefined') Sync.pullOnLoad();
+      if(typeof Payments!=='undefined') Payments.checkReturnFromStripe();
+    });
+  }
 }
 
 // ── DATA LOADER ────────────────────────────────────────────────────────

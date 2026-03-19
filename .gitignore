@@ -1,0 +1,12 @@
+# Config (contains API keys — never commit)
+js/config.js
+
+# Supabase env
+supabase/.env
+supabase/functions/.env
+
+# OS / editor
+.DS_Store
+.vscode/settings.json
+*.swp
+*.swo
