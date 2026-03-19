@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GermanyPass — Dein Weg zur deutschen Staatsbürgerschaft</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="v5-mesh"></div>
+
+<!-- ═══ LANDING ════════════════════════════════════════════════════════ -->
+<div id="v5-landing">
+  <nav class="lnav">
+    <div class="lnav-logo">
+      <div class="lmark">G</div>
+      <span class="lname">GermanyPass</span>
+    </div>
+    <div class="lnav-links">
+      <button class="lbtn" onclick="document.getElementById('tools-anchor').scrollIntoView({behavior:'smooth'})">Tools</button>
+      <button class="lbtn" onclick="document.getElementById('pricing-anchor').scrollIntoView({behavior:'smooth'})">Preise</button>
+      <button class="lbtn" onclick="showAuth('login')">Anmelden</button>
+      <button class="lbtn-cta" onclick="showAuth('signup')">Kostenlos starten →</button>
+    </div>
+  </nav>
+  <div class="hero">
+    <div class="hero-badge">🎯 310 offizielle BAMF-Fragen · Stand 07.05.2025</div>
+    <h1>Dein Weg zur<br><span>deutschen Staatsbürgerschaft</span></h1>
+    <p class="hero-sub">Die komplette Lernplattform für Einbürgerung, Führerschein, Deutsch B1 und mehr — in 20 Sprachen, für alle 16 Bundesländer.</p>
+    <div class="hero-btns">
+      <button class="btn-hero" onclick="showAuth('signup')">Jetzt kostenlos starten →</button>
+      <button class="btn-ghost" onclick="enterApp(true)">Als Gast ausprobieren</button>
+    </div>
+    <div class="hero-nums">
+      <div><span class="hn-num">310</span><span class="hn-lbl">BAMF-Fragen</span></div>
+      <div><span class="hn-num">16</span><span class="hn-lbl">Bundesländer</span></div>
+      <div><span class="hn-num">20</span><span class="hn-lbl">Sprachen</span></div>
+      <div><span class="hn-num">7</span><span class="hn-lbl">Tools geplant</span></div>
+    </div>
+  </div>
+  <section class="tools-sec" id="tools-anchor">
+    <div class="sec-lbl">🧰 Alle Tools</div>
+    <h2 class="sec-h">Alles für deinen Weg</h2>
+    <p class="sec-sub">Jedes Tool folgt demselben Lernprinzip — Fortschritt wird plattformübergreifend gespeichert.</p>
+    <div class="tgrid" id="landing-tools"></div>
+  </section>
+  <section class="price-sec" id="pricing-anchor">
+    <div class="sec-lbl" style="text-align:center">💳 Preise</div>
+    <h2 class="sec-h" style="text-align:center;margin-bottom:6px">Einfach und fair</h2>
+    <p class="sec-sub" style="text-align:center;margin:0 auto 40px">Starte gratis. Upgrade wenn du mehr willst.</p>
+    <div class="pgrid">
+      <div class="plan">
+        <div class="plan-nm">Free</div>
+        <div class="plan-pr">€0<span>/mo</span></div><div class="plan-per">Für immer kostenlos</div>
+        <ul class="plan-feats">
+          <li><span class="pchk">✓</span>Einbürgerungstest (50 Fragen)</li>
+          <li><span class="pchk">✓</span>Alle 20 Sprachen</li>
+          <li><span class="pchk">✓</span>Basis-Fortschritt</li>
+          <li><span class="pcrs">✗</span>Alle 310 Fragen</li>
+          <li><span class="pcrs">✗</span>Probetest + Timer</li>
+          <li><span class="pcrs">✗</span>Weitere Tools</li>
+        </ul>
+        <button class="plan-btn" onclick="showAuth('signup')">Kostenlos starten</button>
+      </div>
+      <div class="plan pop">
+        <div class="pop-pill">BELIEBT</div>
+        <div class="plan-nm">Pro</div>
+        <div class="plan-pr">€4<span>.99/mo</span></div>
+        <div class="plan-per">oder €39.99/Jahr — 33% Ersparnis</div>
+        <ul class="plan-feats">
+          <li><span class="pchk">✓</span>Alle Tools inklusive</li>
+          <li><span class="pchk">✓</span>Alle 310 Fragen</li>
+          <li><span class="pchk">✓</span>Probetest mit 60-Min-Timer</li>
+          <li><span class="pchk">✓</span>Spaced Repetition (SRS)</li>
+          <li><span class="pchk">✓</span>Detaillierte Analysen</li>
+          <li><span class="pchk">✓</span>Prioritäts-Support</li>
+        </ul>
+        <button class="plan-btn p" onclick="showAuth('signup')">Pro starten →</button>
+      </div>
+      <div class="plan">
+        <div class="plan-nm">Schule / B2B</div>
+        <div class="plan-pr">€99<span>/mo</span></div>
+        <div class="plan-per">pro Klasse · ab 10 Lernenden</div>
+        <ul class="plan-feats">
+          <li><span class="pchk">✓</span>Alles in Pro</li>
+          <li><span class="pchk">✓</span>Lehrer-Dashboard</li>
+          <li><span class="pchk">✓</span>Klassen-Fortschritt</li>
+          <li><span class="pchk">✓</span>Zertifikate</li>
+          <li><span class="pchk">✓</span>White-Label Option</li>
+        </ul>
+        <button class="plan-btn" onclick="showToast('info','Kontakt: hallo@germanypass.de')">Kontakt aufnehmen</button>
+      </div>
+    </div>
+  </section>
+  <div class="lfooter">
+    <div class="lnav-logo"><div class="lmark" style="width:26px;height:26px;font-size:12px;border-radius:7px">G</div><span class="lname" style="font-size:14px">GermanyPass</span></div>
+    <div class="lflinks">
+      <a class="lflink" href="#" onclick="enterApp(true);return false">App öffnen</a>
+      <a class="lflink" href="https://www.bamf.de" target="_blank">BAMF ↗</a>
+      <a class="lflink" href="#" onclick="enterApp(true);setTimeout(()=>v5ShowPage('legal'),60);return false">Impressum</a>
+    </div>
+    <span style="font-size:11px;color:var(--txt3)">© 2025 GermanyPass · Stand: 07.05.2025</span>
+  </div>
+</div>
+
+<!-- ═══ AUTH ═══════════════════════════════════════════════════════════ -->
+<div id="v5-auth">
+  <div class="auth-cont">
+    <div class="auth-box">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:28px">
+        <div class="lmark" style="width:28px;height:28px;font-size:13px;border-radius:8px">G</div>
+        <span style="font-family:var(--fh);font-size:15px;font-weight:700;color:var(--txt)">GermanyPass</span>
+      </div>
+      <div class="atabs">
+        <button class="atab act" id="atab-li" onclick="swTab('login')">Anmelden</button>
+        <button class="atab" id="atab-su" onclick="swTab('signup')">Registrieren</button>
+      </div>
+      <div id="form-login">
+        <div class="fg"><label class="flbl">E-Mail</label><input class="finp" type="email" id="li-em" placeholder="deine@email.de" autocomplete="email"></div>
+        <div class="fg"><label class="flbl">Passwort</label><input class="finp" type="password" id="li-pw" placeholder="••••••••" autocomplete="current-password"><div class="ferr" id="li-err">E-Mail oder Passwort falsch.</div></div>
+        <button class="btn-auth" onclick="doLogin()">Anmelden</button>
+        <div class="adiv"><span>oder</span></div>
+        <button class="btn-social" onclick="doSocial('Google')">🇬 Mit Google anmelden</button>
+        <button class="btn-social" onclick="doSocial('Apple')">🍎 Mit Apple anmelden</button>
+        <div class="aswitch">Noch kein Konto? <a href="#" onclick="swTab('signup');return false">Registrieren</a></div>
+        <div class="aswitch" style="margin-top:8px"><a href="#" onclick="enterApp(true);return false">Als Gast weiter →</a></div>
+      </div>
+      <div id="form-signup" style="display:none">
+        <div class="frow">
+          <div class="fg"><label class="flbl">Vorname</label><input class="finp" type="text" id="su-fn" placeholder="Max"></div>
+          <div class="fg"><label class="flbl">Nachname</label><input class="finp" type="text" id="su-ln" placeholder="Mustermann"></div>
+        </div>
+        <div class="fg"><label class="flbl">E-Mail</label><input class="finp" type="email" id="su-em" placeholder="deine@email.de"></div>
+        <div class="fg">
+          <label class="flbl">Passwort (min. 8 Zeichen)</label>
+          <input class="finp" type="password" id="su-pw" placeholder="••••••••" oninput="chkPw(this.value)">
+          <div class="ps-wrap"><div class="ps-fill" id="ps-fill"></div></div>
+          <div class="ferr" id="su-err">Bitte alle Felder ausfüllen.</div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label class="flbl">Herkunftsland</label>
+            <select class="fsel" id="su-co"><option value="">Wählen...</option><option>Türkei</option><option>Syrien</option><option>Afghanistan</option><option>Ukraine</option><option>Polen</option><option>Rumänien</option><option>Indien</option><option>China</option><option>Marokko</option><option>Iran</option><option>Vietnam</option><option>Sonstige</option></select>
+          </div>
+          <div class="fg"><label class="flbl">Bundesland</label>
+            <select class="fsel" id="su-st"><option value="">Wählen...</option><option>Baden-Württemberg</option><option>Bayern</option><option>Berlin</option><option>Brandenburg</option><option>Bremen</option><option>Hamburg</option><option>Hessen</option><option>Mecklenburg-Vorpommern</option><option>Niedersachsen</option><option>Nordrhein-Westfalen</option><option>Rheinland-Pfalz</option><option>Saarland</option><option>Sachsen</option><option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option></select>
+          </div>
+        </div>
+        <button class="btn-auth" onclick="doSignup()">Konto erstellen →</button>
+        <div class="adiv"><span>oder</span></div>
+        <button class="btn-social" onclick="doSocial('Google')">🇬 Mit Google registrieren</button>
+        <div class="aswitch">Bereits registriert? <a href="#" onclick="swTab('login');return false">Anmelden</a></div>
+        <div class="aswitch" style="margin-top:8px"><a href="#" onclick="enterApp(true);return false">Als Gast ausprobieren →</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP SHELL ══════════════════════════════════════════════════════ -->
+<div id="v5-app">
+  <nav class="topnav">
+    <div class="tnmark" onclick="v5ShowPage('dashboard')">G</div>
+    <span class="tnname" onclick="v5ShowPage('dashboard')">GermanyPass</span>
+    <div class="tn-div"></div>
+    <div class="ttabs" id="v5-ttabs"></div>
+    <div class="tnav-r">
+      <div class="streak-pill" id="v5-streak">🔥 0</div>
+      <div style="position:relative">
+        <div class="tnav-avatar" id="v5-avatar" onclick="togglePM()">?</div>
+        <div class="profile-menu" id="v5-pmenu">
+          <div class="pm-hdr">
+            <div class="pm-nm" id="v5-pm-name">Gast</div>
+            <div class="pm-em" id="v5-pm-email"></div>
+          </div>
+          <button class="pm-item" onclick="v5ShowPage('dashboard');closePM()">🏠 Dashboard</button>
+          <button class="pm-item" onclick="v5ShowPage('progress');closePM()">📊 Fortschritt</button>
+          <button class="pm-item" onclick="v5ShowPage('settings');closePM()">⚙️ Einstellungen</button>
+          <button class="pm-item" onclick="openOverlay('lang');closePM()">🌍 Sprache ändern</button>
+          <button class="pm-item" onclick="openOverlay('state');closePM()">🗺️ Bundesland ändern</button>
+          <button class="pm-item dng" onclick="doLogout()">← Abmelden</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div id="dash-view">
+    <div class="dash-grid">
+      <div>
+        <div class="wb">
+          <div class="wb-hi">Willkommen zurück,</div>
+          <div class="wb-nm" id="wb-nm">Nutzer!</div>
+          <div style="font-size:12px;color:var(--txt2);margin-bottom:7px">Fortschritt Einbürgerungstest</div>
+          <div class="wb-prog-bg"><div class="wb-prog-fill" id="wb-fill" style="width:0%"></div></div>
+          <div class="wb-meta"><span id="wb-learned">0 gelernt</span><span id="wb-pct">0%</span></div>
+        </div>
+        <div class="stats-row">
+          <div class="stile"><div class="stile-ico">✅</div><div class="stile-n" id="ds-known">0</div><div class="stile-l">Gewusst</div></div>
+          <div class="stile"><div class="stile-ico">🔥</div><div class="stile-n" id="ds-streak">0</div><div class="stile-l">Tage-Serie</div></div>
+          <div class="stile"><div class="stile-ico">⏱️</div><div class="stile-n" id="ds-time">0</div><div class="stile-l">Min. heute</div></div>
+          <div class="stile"><div class="stile-ico">🎯</div><div class="stile-n" id="ds-acc">–</div><div class="stile-l">Genauigkeit</div></div>
+        </div>
+        <div class="act-card">
+          <div class="act-hdr"><span class="act-title">Aktivität (14 Tage)</span><span style="font-size:11px;color:var(--txt3)" id="act-tot">0 Antworten</span></div>
+          <div class="act-bars" id="act-bars"></div>
+          <div class="act-lbls" id="act-lbls"></div>
+        </div>
+        <div class="cont-card">
+          <div class="cont-hdr">Weitermachen</div>
+          <div id="cont-items"></div>
+        </div>
+      </div>
+      <div>
+        <div class="upgw" id="upgw">
+          <div class="upgw-ico">⭐</div>
+          <div class="upgw-t">Upgrade auf Pro</div>
+          <div class="upgw-d">Alle 310 Fragen, Probetest, SRS und alle zukünftigen Tools freigeschaltet.</div>
+          <button class="upgw-btn" onclick="showToast('info','Zahlung coming soon! Kontakt: hallo@germanypass.de')">Pro für €4.99/mo →</button>
+        </div>
+        <div class="widget">
+          <div class="widget-t">🏆 Errungenschaften</div>
+          <div class="bdg-grid" id="bdg-grid"></div>
+        </div>
+        <div class="widget">
+          <div class="widget-t">🌍 Bestenliste</div>
+          <div id="v5-lboard"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ SECTION (wraps the existing v4 quiz app) -->
+  <div id="quiz-section"></div>
+
+  <!-- PROGRESS -->
+  <div id="v5-progress">
+    <div style="background:var(--s1);border:1px solid var(--bord);border-radius:12px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:var(--s3);display:inline-block"></span>Neu</span>
+        <span style="font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(79,142,247,.5);display:inline-block"></span>Gesehen</span>
+        <span style="font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(52,211,153,.5);display:inline-block"></span>Gewusst</span>
+        <span style="font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(248,113,113,.5);display:inline-block"></span>Falsch</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(20,1fr);gap:3px" id="v5-pgrid"></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="bp" onclick="v5ShowPage('quiz');setTimeout(()=>startQuiz('weak'),50)">🔥 Schwache üben</button>
+      <button class="bd" onclick="v5ResetProg()">🗑️ Zurücksetzen</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="v5-settings">
+    <div class="set-wrap">
+      <div class="set-card2">
+        <h3>Erscheinungsbild</h3>
+        <div class="set-row">
+          <div><div class="set-lbl">Farbschema</div><div class="set-sub">Helles oder dunkles Design</div></div>
+          <div class="theme-btns">
+            <button class="theme-btn" onclick="setTheme('light')" id="tbtn-light">☀️ Hell</button>
+            <button class="theme-btn act" onclick="setTheme('dark')" id="tbtn-dark">🌙 Dunkel</button>
+            <button class="theme-btn" onclick="setTheme('system')" id="tbtn-system">💻 System</button>
+          </div>
+        </div>
+      </div>
+      <div class="set-card2">
+        <h3>Sprache & Bundesland</h3>
+        <div class="set-row">
+          <div><div class="set-lbl">Anzeigesprache</div><div class="set-sub" id="set-lang-val">English</div></div>
+          <button class="bp" onclick="openOverlay('lang')" style="padding:7px 14px;font-size:12px">Ändern</button>
+        </div>
+        <div class="set-row">
+          <div><div class="set-lbl">Bundesland</div><div class="set-sub" id="set-state-val">Rheinland-Pfalz</div></div>
+          <button class="bp" onclick="openOverlay('state')" style="padding:7px 14px;font-size:12px">Ändern</button>
+        </div>
+      </div>
+      <div class="set-card2">
+        <h3>Konto</h3>
+        <div class="set-row">
+          <div><div class="set-lbl">Abo-Status</div><div class="set-sub" id="set-plan">Free Plan</div></div>
+          <button class="bp" onclick="showToast('info','Upgrade coming soon!')" style="padding:7px 14px;font-size:12px">Upgrade ⭐</button>
+        </div>
+        <div class="set-row">
+          <div><div class="set-lbl">Fortschritt löschen</div><div class="set-sub">Alle Lerndaten zurücksetzen</div></div>
+          <button class="bd" onclick="v5ResetProg()">Löschen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGAL -->
+  <div id="v5-legal">
+    <div style="background:var(--s1);border:1px solid var(--bord);border-radius:12px;padding:20px;margin-bottom:12px"><h3 style="font-size:13.5px;font-weight:600;color:var(--txt);margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bord)">Impressum</h3><p style="font-size:12.5px;color:var(--txt2);line-height:1.7">GermanyPass ist eine unabhängige, inoffizielle Lernplattform. Nicht mit dem BAMF oder der deutschen Regierung verbunden.</p></div>
+    <div style="background:var(--s1);border:1px solid var(--bord);border-radius:12px;padding:20px;margin-bottom:12px"><h3 style="font-size:13.5px;font-weight:600;color:var(--txt);margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bord)">Datenschutz</h3><p style="font-size:12.5px;color:var(--txt2);line-height:1.7">Alle Daten verbleiben lokal in deinem Browser (localStorage). Kein Server, keine Cookies, kein Tracking.</p></div>
+    <div style="background:var(--s1);border:1px solid var(--bord);border-radius:12px;padding:20px;margin-bottom:12px"><h3 style="font-size:13.5px;font-weight:600;color:var(--txt);margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bord)">Quellenangabe</h3><p style="font-size:12.5px;color:var(--txt2);line-height:1.7">Gesamtfragenkatalog zum Test „Leben in Deutschland" und zum „Einbürgerungstest", Stand: 07.05.2025. © Bundesamt für Migration und Flüchtlinge (BAMF). Offizielle Infos: <a href="https://oet.bamf.de" target="_blank" style="color:var(--acc)">oet.bamf.de</a></p></div>
+    <div style="background:var(--s1);border:1px solid var(--bord);border-radius:12px;padding:20px"><h3 style="font-size:13.5px;font-weight:600;color:var(--txt);margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bord)">Developer Notes</h3><p style="font-size:12.5px;color:var(--txt2);line-height:1.7">Neues BAMF-PDF an Claude (claude.ai) senden und sagen:<br><code style="background:var(--s2);padding:2px 6px;border-radius:4px;color:var(--grn);font-size:11.5px">"Rebuild GermanyPass v5 with updated BAMF PDF (Stand: [Datum])"</code></p></div>
+  </div>
+
+  <div style="background:var(--s1);border-top:1px solid var(--bord);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:10px;color:var(--txt3)">
+    <span>GermanyPass · Stand: 07.05.2025 · Gesamtfragenkatalog „Leben in Deutschland"</span>
+    <span><a href="#" onclick="v5ShowPage('legal');return false" style="color:var(--txt3)">Impressum</a> · <a href="https://www.bamf.de" target="_blank" style="color:var(--txt3)">BAMF ↗</a></span>
+  </div>
+</div>
+
+<!-- OVERLAYS (reused from v4 but now opened from v5) -->
+<div class="overlay" id="lang-overlay">
+  <div class="overlay-box lo-box">
+    <span class="ov-icon" id="ov-lang-icon">🌍</span>
+    <div class="ov-title" id="ov-lang-title">Choose your language / Sprache wählen</div>
+    <div class="lo-langs" id="lo-langs"></div>
+    <button class="ov-btn" onclick="confirmLang()" id="ov-lang-btn">Continue →</button>
+    <div class="lo-note" id="lo-note">Questions remain in German (required for the real test).</div>
+  </div>
+</div>
+<div class="overlay" id="state-overlay">
+  <div class="overlay-box so-box">
+    <span class="ov-icon">🗺️</span>
+    <div class="ov-title" id="ov-state-title">Wähle dein Bundesland</div>
+    <div class="ov-sub">3 von 33 Prüfungsfragen sind bundeslandspezifisch</div>
+    <div class="states-grid" id="states-grid"></div>
+    <button class="ov-btn" onclick="confirmState()">Bestätigen →</button>
+  </div>
+</div>
+
+<div class="toast-cont" id="toast-cont"></div>
+
+
+<!-- ── DATA (load order matters) ── -->
+<script src="data/questions.js"></script>
+<script src="data/states.js"></script>
+<script src="data/images.js"></script>
+<script src="data/vocabulary.js"></script>
+<script src="data/explanations.js"></script>
+<script src="data/translations.js"></script>
+<script src="data/metadata.js"></script>
+
+<!-- ── APPLICATION LOGIC ── -->
+<script src="js/app.js"></script>
+</body>
