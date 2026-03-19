@@ -308,6 +308,10 @@
       <div><div class="set-label">Fortschritt synchronisieren</div><div class="set-sub">Manuell mit Cloud abgleichen</div></div>
       <button class="bs" onclick="if(typeof Sync!=='undefined')Sync.push().then(()=>showToast('success','☁️ Synchronisiert'))" style="padding:7px 14px;font-size:12px">☁️ Jetzt sync</button>
     </div>
+    <div class="set-row">
+      <div><div class="set-label">Daten exportieren</div><div class="set-sub">Alle Daten als JSON-Datei herunterladen (DSGVO Art. 20)</div></div>
+      <button class="bs" onclick="if(typeof Auth!=='undefined')Auth.exportData()" style="padding:7px 14px;font-size:12px">⬇️ Export</button>
+    </div>
     <div class="set-row" style="border-top:1px solid var(--bord);padding-top:12px;margin-top:4px">
       <div><div class="set-label" style="color:var(--red)">Konto löschen</div><div class="set-sub">Alle Daten werden unwiderruflich entfernt (DSGVO Art. 17)</div></div>
       <button class="bd" onclick="if(typeof Auth!=='undefined')Auth.deleteAccount()">🗑️ Löschen</button>

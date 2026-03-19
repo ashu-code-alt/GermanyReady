@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GermanyReady — Analytics Dashboard</title>
+  <style>
+    :root{
+      --bg:#0d0f1a;--s1:#131624;--s2:#1a1f33;--s3:#222840;
+      --bord:#2a3050;--txt:#e8eaf6;--txt2:#8892b0;--txt3:#556;
+      --acc:#5c7cfa;--green:#43d89e;--red:#e55;--orange:#f5a623;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--txt);font-family:system-ui,sans-serif;font-size:14px;min-height:100vh;}
+
+    /* ── Login screen ── */
+    #login-screen{
+      display:flex;align-items:center;justify-content:center;min-height:100vh;
+    }
+    .login-box{
+      background:var(--s1);border:1px solid var(--bord);border-radius:16px;
+      padding:36px 40px;width:360px;text-align:center;
+    }
+    .login-box h1{font-size:20px;margin-bottom:6px;}
+    .login-box p{color:var(--txt2);font-size:12.5px;margin-bottom:24px;}
+    .login-box input{
+      width:100%;background:var(--s2);border:1px solid var(--bord);border-radius:8px;
+      padding:10px 14px;color:var(--txt);font-size:14px;outline:none;margin-bottom:14px;
+    }
+    .login-box input:focus{border-color:var(--acc);}
+    .login-box button{
+      width:100%;background:var(--acc);color:#fff;border:none;border-radius:9px;
+      padding:11px;font-size:15px;font-weight:600;cursor:pointer;
+    }
+    .login-box button:hover{opacity:.88;}
+    .login-err{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;}
+
+    /* ── Dashboard layout ── */
+    #dashboard{display:none;}
+    header{
+      background:var(--s1);border-bottom:1px solid var(--bord);
+      padding:14px 28px;display:flex;align-items:center;justify-content:space-between;
+    }
+    header h1{font-size:17px;font-weight:700;}
+    header small{color:var(--txt2);font-size:11px;margin-left:10px;}
+    .refresh-btn{
+      background:var(--s2);border:1px solid var(--bord);border-radius:8px;
+      padding:7px 14px;color:var(--txt2);font-size:12px;cursor:pointer;
+    }
+    .refresh-btn:hover{color:var(--txt);}
+    main{padding:24px 28px;max-width:1100px;margin:0 auto;}
+
+    /* ── Stat cards ── */
+    .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+    .stat-card{
+      background:var(--s1);border:1px solid var(--bord);border-radius:12px;
+      padding:18px 20px;
+    }
+    .stat-label{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+    .stat-value{font-size:30px;font-weight:700;}
+    .stat-value.green{color:var(--green);}
+    .stat-value.orange{color:var(--orange);}
+    .stat-sub{font-size:11.5px;color:var(--txt3);margin-top:4px;}
+
+    /* ── Section titles ── */
+    .section-title{font-size:13px;font-weight:700;color:var(--txt2);letter-spacing:.4px;text-transform:uppercase;margin:0 0 12px;}
+
+    /* ── Tables ── */
+    .table-wrap{background:var(--s1);border:1px solid var(--bord);border-radius:12px;overflow:hidden;margin-bottom:28px;}
+    table{width:100%;border-collapse:collapse;}
+    thead th{
+      background:var(--s2);padding:10px 16px;text-align:left;
+      font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;
+      border-bottom:1px solid var(--bord);
+    }
+    tbody td{padding:10px 16px;border-bottom:1px solid var(--bord);color:var(--txt);}
+    tbody tr:last-child td{border-bottom:none;}
+    tbody tr:hover td{background:var(--s2);}
+    .badge{
+      display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;
+    }
+    .badge.quiz{background:#5c7cfa22;color:var(--acc);}
+    .badge.mock{background:#f5a62322;color:var(--orange);}
+    .badge.paywall{background:#e5533322;color:var(--red);}
+    .badge.purchase{background:#43d89e22;color:var(--green);}
+    .badge.other{background:var(--s3);color:var(--txt2);}
+
+    /* ── Retention bar ── */
+    .ret-bar-bg{background:var(--s3);border-radius:4px;height:8px;width:100%;min-width:80px;}
+    .ret-bar{height:8px;border-radius:4px;background:var(--green);transition:width .4s;}
+
+    /* ── Two-column grid for lower sections ── */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+    /* ── Loading / error ── */
+    .loading{color:var(--txt2);padding:40px;text-align:center;}
+    .err-msg{color:var(--red);padding:20px;text-align:center;}
+
+    @media(max-width:700px){
+      .stat-row{grid-template-columns:1fr;}
+      .two-col{grid-template-columns:1fr;}
+      header,main{padding:14px 16px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ───────────────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>🇩🇪 Analytics Dashboard</h1>
+    <p>GermanyReady — Admin access only</p>
+    <input type="text"     id="li-url"    placeholder="Supabase project URL" autocomplete="off">
+    <input type="password" id="li-secret" placeholder="Admin secret" autocomplete="off">
+    <button onclick="doLogin()">Sign in</button>
+    <div class="login-err" id="li-err"></div>
+  </div>
+</div>
+
+<!-- ── Dashboard ───────────────────────────────────────────────────────────── -->
+<div id="dashboard">
+  <header>
+    <div>
+      <h1>GermanyReady Analytics</h1>
+      <small id="hdr-generated"></small>
+    </div>
+    <button class="refresh-btn" onclick="loadData()">⟳ Refresh</button>
+  </header>
+
+  <main>
+    <!-- Totals -->
+    <div class="stat-row" id="stat-row">
+      <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="st-users">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pro Users</div><div class="stat-value orange" id="st-pro">—</div><div class="stat-sub" id="st-conv">—% conversion</div></div>
+      <div class="stat-card"><div class="stat-label">Total Events</div><div class="stat-value green" id="st-events">—</div></div>
+    </div>
+
+    <!-- Weekly events table -->
+    <div class="section-title">Weekly Events — last 12 weeks</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Week</th><th>Event</th><th>Count</th></tr></thead>
+        <tbody id="tbl-events"><tr><td colspan="3" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="two-col">
+      <!-- Weekly new users -->
+      <div>
+        <div class="section-title">New Users per Week</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Week</th><th>New Users</th></tr></thead>
+            <tbody id="tbl-users"><tr><td colspan="2" class="loading">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cohort retention -->
+      <div>
+        <div class="section-title">Week-1 Retention by Signup Cohort</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Signup Week</th><th>Cohort</th><th>W1 Return</th><th>Retention</th></tr></thead>
+            <tbody id="tbl-cohort"><tr><td colspan="4" class="loading">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  let _url = '', _secret = '';
+
+  function doLogin() {
+    const url    = document.getElementById('li-url').value.trim().replace(/\/$/, '');
+    const secret = document.getElementById('li-secret').value.trim();
+    const err    = document.getElementById('li-err');
+    if (!url || !secret) { err.textContent = 'Both fields required.'; return; }
+    _url    = url;
+    _secret = secret;
+    err.textContent = '';
+    loadData();
+  }
+
+  async function loadData() {
+    try {
+      const res  = await fetch(`${_url}/functions/v1/analytics-report`, {
+        headers: { Authorization: 'Bearer ' + _secret, 'Content-Type': 'application/json' },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || res.statusText);
+      render(json);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display    = 'block';
+    } catch (e) {
+      const err = document.getElementById('li-err');
+      if (err) err.textContent = 'Error: ' + e.message;
+      else alert('Error: ' + e.message);
+    }
+  }
+
+  function render(d) {
+    // Header
+    document.getElementById('hdr-generated').textContent =
+      'Generated: ' + new Date(d.generated_at).toLocaleString();
+
+    // Totals
+    const { users, pro_users, events } = d.totals;
+    document.getElementById('st-users').textContent  = fmt(users);
+    document.getElementById('st-pro').textContent    = fmt(pro_users);
+    document.getElementById('st-events').textContent = fmt(events);
+    const conv = users ? ((pro_users / users) * 100).toFixed(1) : 0;
+    document.getElementById('st-conv').textContent   = conv + '% conversion';
+
+    // Weekly events
+    const evTbl = document.getElementById('tbl-events');
+    if (!d.weekly_events.length) {
+      evTbl.innerHTML = '<tr><td colspan="3" style="color:var(--txt3);padding:20px">No data yet</td></tr>';
+    } else {
+      evTbl.innerHTML = d.weekly_events.map(r => `
+        <tr>
+          <td>${r.week}</td>
+          <td><span class="badge ${badgeClass(r.event)}">${r.event}</span></td>
+          <td>${fmt(r.cnt)}</td>
+        </tr>`).join('');
+    }
+
+    // Weekly users
+    const uTbl = document.getElementById('tbl-users');
+    if (!d.weekly_users.length) {
+      uTbl.innerHTML = '<tr><td colspan="2" style="color:var(--txt3);padding:20px">No data yet</td></tr>';
+    } else {
+      uTbl.innerHTML = d.weekly_users.map(r => `
+        <tr><td>${r.week}</td><td>${fmt(r.new_users)}</td></tr>`).join('');
+    }
+
+    // Cohort retention
+    const cTbl = document.getElementById('tbl-cohort');
+    if (!d.cohort_retention.length) {
+      cTbl.innerHTML = '<tr><td colspan="4" style="color:var(--txt3);padding:20px">No data yet</td></tr>';
+    } else {
+      cTbl.innerHTML = d.cohort_retention.map(r => {
+        const pct = r.retention_pct ?? 0;
+        return `<tr>
+          <td>${r.signup_week}</td>
+          <td>${fmt(r.cohort_size)}</td>
+          <td>${fmt(r.returned_w1)}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="ret-bar-bg"><div class="ret-bar" style="width:${Math.min(pct,100)}%"></div></div>
+              <span style="font-size:12px;min-width:36px">${pct}%</span>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  function fmt(n) { return n == null ? '—' : Number(n).toLocaleString(); }
+
+  function badgeClass(ev) {
+    if (ev.includes('quiz') || ev.includes('mock_started')) return 'quiz';
+    if (ev.includes('mock_completed'))  return 'mock';
+    if (ev.includes('paywall'))         return 'paywall';
+    if (ev.includes('purchase') || ev.includes('checkout')) return 'purchase';
+    return 'other';
+  }
+</script>
+</body>
+</html>

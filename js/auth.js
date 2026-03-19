@@ -318,6 +318,30 @@ const Auth = (() => {
     if (typeof showToast === 'function') showToast('info', 'Konto gelöscht. Auf Wiedersehen!');
   }
 
+  // ── Public: export user data (GDPR Art. 20 - data portability) ────────────
+  async function exportData() {
+    const progress = (() => { try { return JSON.parse(localStorage.getItem('et5') || '{}') } catch { return {} } })();
+    const payload = {
+      exported_at: new Date().toISOString(),
+      profile: _profile || null,
+      progress,
+    };
+    // Also fetch server-side progress if logged in
+    if (_session) {
+      try {
+        const { data } = await window._sb.from('progress').select('data,updated_at').eq('user_id', _session.user.id).single();
+        if (data) payload.progress_server = data;
+      } catch (_) {}
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'germanready-export.json';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    if (typeof showToast === 'function') showToast('success', 'Daten exportiert.');
+  }
+
   // ── Public: refresh profile (called after purchase) ───────────────────────
   async function refreshProfile() {
     await _loadProfile();
@@ -349,7 +373,7 @@ const Auth = (() => {
   return {
     init, openModal, closeModal,
     isLoggedIn, isPro, getSession, getProfile,
-    logout, deleteAccount, refreshProfile,
+    logout, deleteAccount, exportData, refreshProfile,
     // semi-private (called from HTML onclick)
     _switchTab, _doLogin, _doRegister, _doGoogle, _doMagic,
   };
