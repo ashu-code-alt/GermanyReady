@@ -328,7 +328,7 @@ function autoReveal(q,status){
   const corLabelAR=stateImgAR&&stateImgAR.t==='o'?('Bild '+(q.correct+1)):q.options[q.correct];
   if(ok){fb.className='fb ok show';fb.innerHTML=`<strong>${t('correct')}</strong>`;}
   else{fb.className='fb no show';fb.innerHTML='<strong>'+t('wrong')+'</strong> '+t('correct_answer')+': <strong>'+corLabelAR+'</strong>'+(corEN&&corEN!==corLabelAR?' <em style="opacity:.7">('+corEN+')</em>':'');}
-  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:null;
+  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:(typeof STATE_EXPL!=='undefined'&&STATE_EXPL[q.section]?STATE_EXPL[q.section][q.num]:null);
   if(e){document.getElementById('expl-de').textContent=e[1];document.getElementById('expl-en').textContent=e[2];document.getElementById('expl').className='expl show';}
   document.getElementById('btn-skip').style.display='none';
   document.getElementById('btn-next').style.display='';
@@ -428,7 +428,7 @@ function pick(i,btn){
   const corLabel=stateImgForFb&&stateImgForFb.t==='o'?('Bild '+(q.correct+1)):q.options[q.correct];
   if(ok){fb.className='fb ok show';fb.innerHTML=`<strong>${t('correct')}</strong>`;}
   else{fb.className='fb no show';fb.innerHTML='<strong>'+t('wrong')+'</strong> '+t('correct_answer')+': <strong>'+corLabel+'</strong>'+(corEN&&corEN!==corLabel?' <em style="opacity:.7">('+corEN+')</em>':'');}
-  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:null;
+  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:(typeof STATE_EXPL!=='undefined'&&STATE_EXPL[q.section]?STATE_EXPL[q.section][q.num]:null);
   if(e){document.getElementById('expl-de').textContent=e[1];document.getElementById('expl-en').textContent=e[2];document.getElementById('expl').className='expl show';}
   document.getElementById('btn-skip').style.display='none';
   document.getElementById('btn-next').style.display='';
@@ -510,7 +510,7 @@ function renderL(){
     const im=imgQSL.imgs[q.correct];
     if(im) lai.innerHTML=`<img src="${im}" style="height:65px;border-radius:5px;margin-top:9px">`;
   }
-  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:null;
+  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:(typeof STATE_EXPL!=='undefined'&&STATE_EXPL[q.section]?STATE_EXPL[q.section][q.num]:null);
   document.getElementById('lexpl').style.display='none';
   if(e){document.getElementById('lexpl-de').textContent=e[1];document.getElementById('lexpl-en').textContent=e[2];}
   setS(q.num,q.section,'s');
@@ -521,7 +521,8 @@ function revealAnswer(){
   document.getElementById('kbtns').style.display='flex';
   document.getElementById('rvbtn').style.display='none';
   const q=queue[idx];
-  if((!q.section||q.section==='general')&&EXPL[String(q.num)]) document.getElementById('lexpl').style.display='block';
+  const hasExpl=(!q.section||q.section==='general')?!!EXPL[String(q.num)]:(typeof STATE_EXPL!=='undefined'&&!!(STATE_EXPL[q.section]&&STATE_EXPL[q.section][q.num]));
+  if(hasExpl) document.getElementById('lexpl').style.display='block';
 }
 function markKnown(ok){const q=queue[idx];setS(q.num,q.section,ok?'k':'n');setSRS(q.num,q.section,ok);updStreak(ok);lNext();}
 function lNext(){idx++;if(idx>=queue.length){showPage('home');return;}renderL();}
@@ -680,6 +681,7 @@ const DATA_FILES = [
   'data/states.js',
   'data/images.js',
   'data/state-images.js',
+  'data/state-explanations.js',
   'data/vocabulary.js',
   'data/explanations.js',
   'data/translations.js',
