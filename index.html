@@ -95,6 +95,7 @@
       <button class="nb" onclick="showPage('vocab')" id="nb-vocab"><span class="ni">📚</span><span id="nb-vocab-txt">Vokabeln</span><span class="nbadge">143</span></button>
       <button class="nb" onclick="showPage('progress')" id="nb-prog"><span class="ni">📊</span><span id="nb-prog-txt">Fortschritt</span></button>
       <button class="nb" onclick="showPage('settings')" id="nb-settings"><span class="ni">⚙️</span><span id="nb-settings-txt">Einstellungen</span></button>
+      <button class="nb" onclick="if(typeof Payments!=='undefined')Payments.showPricingPage()" id="nb-pro"><span class="ni">⭐</span><span>Pro</span><span class="nbadge" id="pro-badge-text">FREE</span></button>
     </div>
     <div class="sb-stats">
       <div class="sc"><div class="sn g" id="st-k">0</div><div class="sl" id="sl-knew">Gewusst ✓</div></div>
@@ -292,38 +293,108 @@
       <button class="bp" onclick="changeState()" style="padding:7px 14px;font-size:12px" id="btn-change-state">Ändern</button>
     </div>
   </div>
+  <!-- Account card — shown/hidden by auth.js _updateBadge() -->
+  <div class="set-card" id="set-account-card" style="display:none">
+    <h3>Konto &amp; Synchronisation</h3>
+    <div class="set-row">
+      <div><div class="set-label">Angemeldet als</div><div class="set-sub" id="set-user-email">—</div></div>
+      <button class="bp" onclick="if(typeof Auth!=='undefined')Auth.logout()" style="padding:7px 14px;font-size:12px">Abmelden</button>
+    </div>
+    <div class="set-row">
+      <div><div class="set-label">Plan</div><div class="set-sub" id="set-user-plan">Kostenlos</div></div>
+      <button class="bp" onclick="if(typeof Payments!=='undefined')Payments.showPricingPage()" style="padding:7px 14px;font-size:12px" id="btn-upgrade">⭐ Upgrade</button>
+    </div>
+    <div class="set-row">
+      <div><div class="set-label">Fortschritt synchronisieren</div><div class="set-sub">Manuell mit Cloud abgleichen</div></div>
+      <button class="bs" onclick="if(typeof Sync!=='undefined')Sync.push().then(()=>showToast('success','☁️ Synchronisiert'))" style="padding:7px 14px;font-size:12px">☁️ Jetzt sync</button>
+    </div>
+    <div class="set-row" style="border-top:1px solid var(--bord);padding-top:12px;margin-top:4px">
+      <div><div class="set-label" style="color:var(--red)">Konto löschen</div><div class="set-sub">Alle Daten werden unwiderruflich entfernt (DSGVO Art. 17)</div></div>
+      <button class="bd" onclick="if(typeof Auth!=='undefined')Auth.deleteAccount()">🗑️ Löschen</button>
+    </div>
+  </div>
   <div class="set-card">
     <h3>Daten</h3>
     <div class="set-row">
-      <div><div class="set-label">Fortschritt zurücksetzen</div><div class="set-sub">Alle Lerndaten löschen</div></div>
-      <button class="bd" onclick="resetProg()">🗑️ Löschen</button>
+      <div><div class="set-label">Fortschritt zurücksetzen</div><div class="set-sub">Alle lokalen Lerndaten löschen</div></div>
+      <button class="bd" onclick="resetProg()">🗑️ Zurücksetzen</button>
     </div>
   </div>
 </div>
 
 <!-- LEGAL -->
 <div id="legal-page">
-  <div class="ph"><h2 class="ptitle">Impressum & Rechtliches</h2></div>
+  <div class="ph"><h2 class="ptitle">Impressum &amp; Rechtliches</h2></div>
+
   <div class="legal-box">
-    <h3>Impressum (Legal Notice)</h3>
-    <p>This application is an independent, unofficial educational tool to prepare for the German Einbürgerungstest. It is not affiliated with, endorsed by, or connected to the Bundesamt für Migration und Flüchtlinge (BAMF) or the German government.</p>
+    <h3>Impressum (§ 5 TMG)</h3>
+    <p><strong>[Name des Anbieters]</strong><br>
+    [Straße und Hausnummer]<br>
+    [PLZ] [Ort], Deutschland<br>
+    E-Mail: <a href="mailto:kontakt@example.de">kontakt@example.de</a></p>
+    <p>Diese App ist ein unabhängiges, inoffizielles Lernwerkzeug. Es besteht keine Verbindung zum Bundesamt für Migration und Flüchtlinge (BAMF) oder zur Bundesregierung.</p>
   </div>
+
   <div class="legal-box">
-    <h3>Haftungsausschluss (Disclaimer)</h3>
+    <h3>Datenschutzerklärung (DSGVO)</h3>
+    <p><strong>Verantwortlicher:</strong> [Name, Adresse wie oben]</p>
+
+    <p><strong>Was wir speichern (ohne Konto):</strong><br>
+    Dein Lernfortschritt wird ausschließlich im lokalen Browser-Speicher (<code>localStorage</code>) deines Geräts gespeichert. Es werden keine personenbezogenen Daten übertragen.</p>
+
+    <p><strong>Was wir speichern (mit Konto):</strong><br>
+    Bei Registrierung speichern wir deine E-Mail-Adresse und deinen verschlüsselten Lernfortschritt auf EU-Servern (Supabase, Frankfurt/Deutschland). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).</p>
+
+    <p><strong>Anonymisierte Nutzungsdaten:</strong><br>
+    Wir erfassen anonymisierte Nutzungsereignisse (z. B. „Quiz gestartet", „Probetest abgeschlossen") ohne Personenbezug auf unseren EU-Servern. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse zur Produktverbesserung).</p>
+
+    <p><strong>Zahlungen:</strong><br>
+    Bei PRO-Abonnements werden Zahlungsdaten ausschließlich durch Stripe Inc. (EU-konformer Zahlungsdienstleister) verarbeitet. Wir speichern keine Kreditkartendaten. <a href="https://stripe.com/de/privacy" target="_blank">Stripe Datenschutz ↗</a></p>
+
+    <p><strong>Auftragsverarbeiter (Art. 28 DSGVO):</strong><br>
+    · Supabase Inc. (Auth, Datenbank, Cloud-Funktionen) — EU-Region Frankfurt<br>
+    · Stripe Inc. (Zahlungsabwicklung) — EU-Datenverarbeitung</p>
+
+    <p><strong>Cookies:</strong><br>
+    Wir verwenden ausschließlich technisch notwendige Cookies (Session-Token für angemeldete Nutzer). Kein Tracking, keine Werbe-Cookies. Ein Cookie-Banner ist daher nicht erforderlich.</p>
+
+    <p><strong>Deine Rechte (Art. 15–22 DSGVO):</strong><br>
+    Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch. Zur Löschung deines Kontos und aller Daten: Einstellungen → Konto löschen. Für weitere Anfragen: <a href="mailto:kontakt@example.de">kontakt@example.de</a></p>
+
+    <p><strong>Aufbewahrung:</strong> Kontodaten werden nach Kündigung/Löschung innerhalb von 30 Tagen vollständig entfernt.</p>
+
+    <p><strong>Beschwerderecht:</strong> Du kannst dich bei deiner zuständigen Datenschutzbehörde beschweren. In Deutschland: <a href="https://www.bfdi.bund.de" target="_blank">Bundesbeauftragte für Datenschutz (BfDI) ↗</a></p>
+  </div>
+
+  <div class="legal-box">
+    <h3>Nutzungsbedingungen (AGB)</h3>
+    <p>Die Nutzung dieser App erfolgt auf eigene Verantwortung. Der Dienst wird „wie besehen" bereitgestellt. Wir behalten uns das Recht vor, Features zu ändern, Preise anzupassen oder den Dienst einzustellen.</p>
+    <p><strong>PRO-Abonnement:</strong> Monatlich kündbar. Kündigung jederzeit über dein Konto oder per E-Mail. Nach Kündigung bleibt PRO bis zum Ende des bezahlten Zeitraums aktiv.</p>
+    <p>Diese App ist kein Ersatz für offizielle Vorbereitungskurse. Für verbindliche Informationen: <a href="https://www.bamf.de" target="_blank">www.bamf.de ↗</a></p>
+  </div>
+
+  <div class="legal-box">
+    <h3>Widerrufs- &amp; Rückerstattungsrichtlinie</h3>
+    <p><strong>Widerrufsrecht:</strong> Bei digitalen Abonnements erlischt das 14-tägige Widerrufsrecht, sobald der Dienst mit deiner ausdrücklichen Zustimmung gestartet wurde.</p>
+    <p><strong>Kulanzerstattung:</strong> Bei technischen Problemen auf unserer Seite erstatten wir den anteiligen Monatsbetrag. Anfragen an: <a href="mailto:kontakt@example.de">kontakt@example.de</a></p>
+    <p>Rückerstattungen werden innerhalb von 7 Werktagen auf dem Originalzahlungsweg gutgeschrieben.</p>
+  </div>
+
+  <div class="legal-box">
+    <h3>Haftungsausschluss</h3>
     <p>Die Fragen basieren auf dem offiziellen BAMF-Fragenkatalog (Stand: 07.05.2025). Keine Gewähr für Aktualität und Richtigkeit. Offizielle Informationen: <a href="https://www.bamf.de" target="_blank">www.bamf.de</a> und <a href="https://oet.bamf.de" target="_blank">oet.bamf.de</a>.</p>
-    <p>BAMF-Quellenangabe: Gesamtfragenkatalog zum Test „Leben in Deutschland" und zum „Einbürgerungstest", Stand: 07.05.2025. © Bundesamt für Migration und Flüchtlinge.</p>
+    <p>Quellenangabe: Gesamtfragenkatalog zum Test „Leben in Deutschland" und zum „Einbürgerungstest", Stand: 07.05.2025. © Bundesamt für Migration und Flüchtlinge.</p>
   </div>
+
   <div class="legal-box">
-    <h3>Datenschutzerklärung (Privacy Policy)</h3>
-    <p>Diese App läuft vollständig im Browser. Es werden keine persönlichen Daten gesammelt, übertragen oder gespeichert. Der Lernfortschritt wird ausschließlich im lokalen Browser-Speicher (localStorage) gespeichert und verlässt niemals dein Gerät.</p>
-  </div>
-  <div class="legal-box">
-    <h3>Developer Notes — Updating Questions</h3>
-    <p>When BAMF releases a new question catalog, update this app by:</p>
-    <p>1. Download the new PDF from <a href="https://oet.bamf.de" target="_blank">oet.bamf.de</a><br>
-    2. Share the PDF with Claude (claude.ai)<br>
-    3. Say: <code>"Here is the updated BAMF PDF (Stand: [date]). Rebuild with updated questions, preserve all features."</code><br>
-    4. Claude extracts all questions, answers, and state sections automatically.</p>
+    <h3>Fragen aktualisieren (Entwickler-Hinweis)</h3>
+    <p>Wenn BAMF einen neuen Fragenkatalog veröffentlicht:</p>
+    <ol style="padding-left:18px;font-size:13px;line-height:1.7">
+      <li>PDF von <a href="https://oet.bamf.de" target="_blank">oet.bamf.de</a> herunterladen</li>
+      <li>PDF mit Claude teilen (claude.ai)</li>
+      <li>Eingabe: <code>"Aktualisiertes BAMF-PDF (Stand: [Datum]). Fragen neu einlesen, alle Features beibehalten."</code></li>
+      <li>Claude extrahiert alle Fragen, Antworten und Bundesland-Abschnitte automatisch.</li>
+    </ol>
   </div>
 </div>
 
@@ -335,6 +406,15 @@
   </div>
 </div>
 
+<!-- ── AUTH / SYNC / ANALYTICS / PAYMENTS (load before app.js) ── -->
+<!-- Supabase JS client (EU-hosted, used for auth + DB + Edge Functions) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- Project config — copy js/config.example.js → js/config.js and fill keys -->
+<script src="js/config.js" onerror="console.warn('config.js missing — auth/sync/payments disabled')"></script>
+<script src="js/auth.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/sync.js"></script>
+<script src="js/payments.js"></script>
 <!-- ── APPLICATION LOGIC (data loaded dynamically) ── -->
 <script src="js/app.js"></script>
 </body>
