@@ -324,9 +324,11 @@ function autoReveal(q,status){
   const tr2=getTrans(q);
   const corEN=tr2&&tr2.opts?tr2.opts[q.correct]:'';
   const fb=document.getElementById('fb');
+  const stateImgAR=(q.section&&q.section!=='general'&&typeof STATEIMGS!=='undefined'&&STATEIMGS[q.section])?STATEIMGS[q.section][q.num]:null;
+  const corLabelAR=stateImgAR&&stateImgAR.t==='o'?('Bild '+(q.correct+1)):q.options[q.correct];
   if(ok){fb.className='fb ok show';fb.innerHTML=`<strong>${t('correct')}</strong>`;}
-  else{fb.className='fb no show';fb.innerHTML='<strong>'+t('wrong')+'</strong> '+t('correct_answer')+': <strong>'+q.options[q.correct]+'</strong>'+(corEN&&corEN!==q.options[q.correct]?' <em style="opacity:.7">('+corEN+')</em>':'');}
-  const e=EXPL[String(q.num)];
+  else{fb.className='fb no show';fb.innerHTML='<strong>'+t('wrong')+'</strong> '+t('correct_answer')+': <strong>'+corLabelAR+'</strong>'+(corEN&&corEN!==corLabelAR?' <em style="opacity:.7">('+corEN+')</em>':'');}
+  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:null;
   if(e){document.getElementById('expl-de').textContent=e[1];document.getElementById('expl-en').textContent=e[2];document.getElementById('expl').className='expl show';}
   document.getElementById('btn-skip').style.display='none';
   document.getElementById('btn-next').style.display='';
@@ -360,16 +362,22 @@ function renderQ(){
   document.getElementById('qde').innerHTML=makeHW(q.question);
   document.getElementById('srs-info').textContent=getSRSLabel(q.num,q.section);
   const qi=document.getElementById('qimg2');qi.innerHTML='';
-  if(IMGQS[q.num]&&IMGQS[q.num].t==='q') qi.innerHTML=`<img src="${IMGQS[q.num].img}" class="qimg">`;
+  const stateImgQ=(q.section&&q.section!=='general'&&typeof STATEIMGS!=='undefined'&&STATEIMGS[q.section])?STATEIMGS[q.section][q.num]:null;
+  const imgQS=stateImgQ||IMGQS[q.num];
+  if(imgQS&&imgQS.t==='q'&&imgQS.img) qi.innerHTML=`<img src="${imgQS.img}" class="qimg">`;
   const oc=document.getElementById('oc');oc.innerHTML='';
   q.options.forEach((opt,i)=>{
     const btn=document.createElement('button');
     btn.className='ob';btn.onclick=()=>pick(i,btn);
     const L=String.fromCharCode(65+i);
-    const imgQ=IMGQS[q.num];
     const enOpt=tr&&tr.opts?tr.opts[i]:'';
-    if(imgQ&&imgQ.t==='o'&&imgQ.imgs&&imgQ.imgs[i]){
-      btn.innerHTML=`<div class="oimgw"><span class="ol">${L}</span><img src="${imgQ.imgs[i]}" class="oimg"><span style="color:var(--txt2);font-size:11px">Bild ${i+1}</span></div>`;
+    let optImg=null;
+    if(stateImgQ&&stateImgQ.t==='o'&&stateImgQ.imgs){
+      // Map "Bild X" label to image index X-1
+      const m=opt.match(/\d+/);optImg=m?stateImgQ.imgs[parseInt(m[0])-1]:null;
+    } else if(imgQS&&imgQS.t==='o'&&imgQS.imgs){optImg=imgQS.imgs[i];}
+    if(optImg){
+      btn.innerHTML=`<div class="oimgw"><span class="ol">${L}</span><img src="${optImg}" class="oimg"><span style="color:var(--txt2);font-size:11px">${opt}</span></div>`;
     } else {
       const niPfx=NI[currentLang]&&currentLang!=='en'&&enOpt&&enOpt!==opt?('<span style="font-weight:600;font-size:10px">'+NI[currentLang]+'</span> '):'';
       const optEnHtml=enOpt&&enOpt!==opt?('<span class="opt-en">'+niPfx+enOpt+'</span>'):'';
@@ -416,9 +424,11 @@ function pick(i,btn){
   if(nb){nb.className='qnb '+(ok?'k':'n')+' cur';}
   const tr=getTrans(q);const corEN=tr&&tr.opts?tr.opts[q.correct]:'';
   const fb=document.getElementById('fb');
+  const stateImgForFb=(q.section&&q.section!=='general'&&typeof STATEIMGS!=='undefined'&&STATEIMGS[q.section])?STATEIMGS[q.section][q.num]:null;
+  const corLabel=stateImgForFb&&stateImgForFb.t==='o'?('Bild '+(q.correct+1)):q.options[q.correct];
   if(ok){fb.className='fb ok show';fb.innerHTML=`<strong>${t('correct')}</strong>`;}
-  else{fb.className='fb no show';fb.innerHTML='<strong>'+t('wrong')+'</strong> '+t('correct_answer')+': <strong>'+q.options[q.correct]+'</strong>'+(corEN&&corEN!==q.options[q.correct]?' <em style="opacity:.7">('+corEN+')</em>':'');}
-  const e=EXPL[String(q.num)];
+  else{fb.className='fb no show';fb.innerHTML='<strong>'+t('wrong')+'</strong> '+t('correct_answer')+': <strong>'+corLabel+'</strong>'+(corEN&&corEN!==corLabel?' <em style="opacity:.7">('+corEN+')</em>':'');}
+  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:null;
   if(e){document.getElementById('expl-de').textContent=e[1];document.getElementById('expl-en').textContent=e[2];document.getElementById('expl').className='expl show';}
   document.getElementById('btn-skip').style.display='none';
   document.getElementById('btn-next').style.display='';
@@ -482,7 +492,9 @@ function renderL(){
   } else { lenEl.textContent=''; }
   document.getElementById('lq').innerHTML=makeHW(q.question);
   const li=document.getElementById('lqimg');li.innerHTML='';
-  if(IMGQS[q.num]&&IMGQS[q.num].t==='q') li.innerHTML=`<img src="${IMGQS[q.num].img}" class="qimg">`;
+  const stateImgQL=(q.section&&q.section!=='general'&&typeof STATEIMGS!=='undefined'&&STATEIMGS[q.section])?STATEIMGS[q.section][q.num]:null;
+  const imgQSL=stateImgQL||IMGQS[q.num];
+  if(imgQSL&&imgQSL.t==='q'&&imgQSL.img) li.innerHTML=`<img src="${imgQSL.img}" class="qimg">`;
   document.getElementById('ar').className='ar';
   document.getElementById('kbtns').style.display='none';
   document.getElementById('rvbtn').style.display='';
@@ -491,11 +503,14 @@ function renderL(){
   const en2=tr&&tr.opts?tr.opts[q.correct]:'';
   document.getElementById('lat-en').textContent=en2&&en2!==cor?en2:'';
   const lai=document.getElementById('laimg');lai.innerHTML='';
-  if(IMGQS[q.num]&&IMGQS[q.num].t==='o'&&IMGQS[q.num].imgs){
-    const im=IMGQS[q.num].imgs[q.correct];
+  if(stateImgQL&&stateImgQL.t==='o'&&stateImgQL.imgs){
+    const m=cor.match(/\d+/);const im=m?stateImgQL.imgs[parseInt(m[0])-1]:null;
+    if(im) lai.innerHTML=`<img src="${im}" style="height:65px;border-radius:5px;margin-top:9px">`;
+  } else if(imgQSL&&imgQSL.t==='o'&&imgQSL.imgs){
+    const im=imgQSL.imgs[q.correct];
     if(im) lai.innerHTML=`<img src="${im}" style="height:65px;border-radius:5px;margin-top:9px">`;
   }
-  const e=EXPL[String(q.num)];
+  const e=(!q.section||q.section==='general')?EXPL[String(q.num)]:null;
   document.getElementById('lexpl').style.display='none';
   if(e){document.getElementById('lexpl-de').textContent=e[1];document.getElementById('lexpl-en').textContent=e[2];}
   setS(q.num,q.section,'s');
@@ -506,7 +521,7 @@ function revealAnswer(){
   document.getElementById('kbtns').style.display='flex';
   document.getElementById('rvbtn').style.display='none';
   const q=queue[idx];
-  if(EXPL[String(q.num)]) document.getElementById('lexpl').style.display='block';
+  if((!q.section||q.section==='general')&&EXPL[String(q.num)]) document.getElementById('lexpl').style.display='block';
 }
 function markKnown(ok){const q=queue[idx];setS(q.num,q.section,ok?'k':'n');setSRS(q.num,q.section,ok);updStreak(ok);lNext();}
 function lNext(){idx++;if(idx>=queue.length){showPage('home');return;}renderL();}
@@ -664,6 +679,7 @@ const DATA_FILES = [
   'data/questions.js',
   'data/states.js',
   'data/images.js',
+  'data/state-images.js',
   'data/vocabulary.js',
   'data/explanations.js',
   'data/translations.js',
